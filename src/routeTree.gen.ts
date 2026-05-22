@@ -16,6 +16,7 @@ import { Route as ModulesUsersWebRouteImport } from './routes/modules.users-web'
 import { Route as ModulesUsersMobileRouteImport } from './routes/modules.users-mobile'
 import { Route as ModulesStoriesRouteImport } from './routes/modules.stories'
 import { Route as ModulesSondagesRouteImport } from './routes/modules.sondages'
+import { Route as ModulesSignalementsRouteImport } from './routes/modules.signalements'
 import { Route as ModulesPostsRouteImport } from './routes/modules.posts'
 
 const LoginRoute = LoginRouteImport.update({
@@ -53,6 +54,11 @@ const ModulesSondagesRoute = ModulesSondagesRouteImport.update({
   path: '/modules/sondages',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModulesSignalementsRoute = ModulesSignalementsRouteImport.update({
+  id: '/modules/signalements',
+  path: '/modules/signalements',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ModulesPostsRoute = ModulesPostsRouteImport.update({
   id: '/modules/posts',
   path: '/modules/posts',
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/modules/posts': typeof ModulesPostsRoute
+  '/modules/signalements': typeof ModulesSignalementsRoute
   '/modules/sondages': typeof ModulesSondagesRoute
   '/modules/stories': typeof ModulesStoriesRoute
   '/modules/users-mobile': typeof ModulesUsersMobileRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/modules/posts': typeof ModulesPostsRoute
+  '/modules/signalements': typeof ModulesSignalementsRoute
   '/modules/sondages': typeof ModulesSondagesRoute
   '/modules/stories': typeof ModulesStoriesRoute
   '/modules/users-mobile': typeof ModulesUsersMobileRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/modules/posts': typeof ModulesPostsRoute
+  '/modules/signalements': typeof ModulesSignalementsRoute
   '/modules/sondages': typeof ModulesSondagesRoute
   '/modules/stories': typeof ModulesStoriesRoute
   '/modules/users-mobile': typeof ModulesUsersMobileRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/modules/posts'
+    | '/modules/signalements'
     | '/modules/sondages'
     | '/modules/stories'
     | '/modules/users-mobile'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/modules/posts'
+    | '/modules/signalements'
     | '/modules/sondages'
     | '/modules/stories'
     | '/modules/users-mobile'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/modules/posts'
+    | '/modules/signalements'
     | '/modules/sondages'
     | '/modules/stories'
     | '/modules/users-mobile'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   ModulesPostsRoute: typeof ModulesPostsRoute
+  ModulesSignalementsRoute: typeof ModulesSignalementsRoute
   ModulesSondagesRoute: typeof ModulesSondagesRoute
   ModulesStoriesRoute: typeof ModulesStoriesRoute
   ModulesUsersMobileRoute: typeof ModulesUsersMobileRoute
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModulesSondagesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/modules/signalements': {
+      id: '/modules/signalements'
+      path: '/modules/signalements'
+      fullPath: '/modules/signalements'
+      preLoaderRoute: typeof ModulesSignalementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/modules/posts': {
       id: '/modules/posts'
       path: '/modules/posts'
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   ModulesPostsRoute: ModulesPostsRoute,
+  ModulesSignalementsRoute: ModulesSignalementsRoute,
   ModulesSondagesRoute: ModulesSondagesRoute,
   ModulesStoriesRoute: ModulesStoriesRoute,
   ModulesUsersMobileRoute: ModulesUsersMobileRoute,
