@@ -18,6 +18,7 @@ import { Route as ModulesStoriesRouteImport } from './routes/modules.stories'
 import { Route as ModulesSondagesRouteImport } from './routes/modules.sondages'
 import { Route as ModulesSignalementsRouteImport } from './routes/modules.signalements'
 import { Route as ModulesPostsRouteImport } from './routes/modules.posts'
+import { Route as ModulesIdeesRouteImport } from './routes/modules.idees'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -64,11 +65,17 @@ const ModulesPostsRoute = ModulesPostsRouteImport.update({
   path: '/modules/posts',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModulesIdeesRoute = ModulesIdeesRouteImport.update({
+  id: '/modules/idees',
+  path: '/modules/idees',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/modules/idees': typeof ModulesIdeesRoute
   '/modules/posts': typeof ModulesPostsRoute
   '/modules/signalements': typeof ModulesSignalementsRoute
   '/modules/sondages': typeof ModulesSondagesRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/modules/idees': typeof ModulesIdeesRoute
   '/modules/posts': typeof ModulesPostsRoute
   '/modules/signalements': typeof ModulesSignalementsRoute
   '/modules/sondages': typeof ModulesSondagesRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/modules/idees': typeof ModulesIdeesRoute
   '/modules/posts': typeof ModulesPostsRoute
   '/modules/signalements': typeof ModulesSignalementsRoute
   '/modules/sondages': typeof ModulesSondagesRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/login'
+    | '/modules/idees'
     | '/modules/posts'
     | '/modules/signalements'
     | '/modules/sondages'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/login'
+    | '/modules/idees'
     | '/modules/posts'
     | '/modules/signalements'
     | '/modules/sondages'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/login'
+    | '/modules/idees'
     | '/modules/posts'
     | '/modules/signalements'
     | '/modules/sondages'
@@ -139,6 +151,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
+  ModulesIdeesRoute: typeof ModulesIdeesRoute
   ModulesPostsRoute: typeof ModulesPostsRoute
   ModulesSignalementsRoute: typeof ModulesSignalementsRoute
   ModulesSondagesRoute: typeof ModulesSondagesRoute
@@ -212,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModulesPostsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/modules/idees': {
+      id: '/modules/idees'
+      path: '/modules/idees'
+      fullPath: '/modules/idees'
+      preLoaderRoute: typeof ModulesIdeesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -219,6 +239,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
+  ModulesIdeesRoute: ModulesIdeesRoute,
   ModulesPostsRoute: ModulesPostsRoute,
   ModulesSignalementsRoute: ModulesSignalementsRoute,
   ModulesSondagesRoute: ModulesSondagesRoute,
