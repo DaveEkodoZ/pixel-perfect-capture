@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ModulesUsersWebRouteImport } from './routes/modules.users-web'
+import { Route as ModulesUsersMobileRouteImport } from './routes/modules.users-mobile'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -34,17 +35,24 @@ const ModulesUsersWebRoute = ModulesUsersWebRouteImport.update({
   path: '/modules/users-web',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModulesUsersMobileRoute = ModulesUsersMobileRouteImport.update({
+  id: '/modules/users-mobile',
+  path: '/modules/users-mobile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/modules/users-mobile': typeof ModulesUsersMobileRoute
   '/modules/users-web': typeof ModulesUsersWebRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/modules/users-mobile': typeof ModulesUsersMobileRoute
   '/modules/users-web': typeof ModulesUsersWebRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,38 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/modules/users-mobile': typeof ModulesUsersMobileRoute
   '/modules/users-web': typeof ModulesUsersWebRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login' | '/modules/users-web'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/modules/users-mobile'
+    | '/modules/users-web'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/modules/users-web'
-  id: '__root__' | '/' | '/dashboard' | '/login' | '/modules/users-web'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/modules/users-mobile'
+    | '/modules/users-web'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/modules/users-mobile'
+    | '/modules/users-web'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
+  ModulesUsersMobileRoute: typeof ModulesUsersMobileRoute
   ModulesUsersWebRoute: typeof ModulesUsersWebRoute
 }
 
@@ -99,6 +125,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModulesUsersWebRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/modules/users-mobile': {
+      id: '/modules/users-mobile'
+      path: '/modules/users-mobile'
+      fullPath: '/modules/users-mobile'
+      preLoaderRoute: typeof ModulesUsersMobileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -106,6 +139,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
+  ModulesUsersMobileRoute: ModulesUsersMobileRoute,
   ModulesUsersWebRoute: ModulesUsersWebRoute,
 }
 export const routeTree = rootRouteImport
