@@ -14,6 +14,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ModulesUsersWebRouteImport } from './routes/modules.users-web'
 import { Route as ModulesUsersMobileRouteImport } from './routes/modules.users-mobile'
+import { Route as ModulesStoriesRouteImport } from './routes/modules.stories'
 import { Route as ModulesPostsRouteImport } from './routes/modules.posts'
 
 const LoginRoute = LoginRouteImport.update({
@@ -41,6 +42,11 @@ const ModulesUsersMobileRoute = ModulesUsersMobileRouteImport.update({
   path: '/modules/users-mobile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModulesStoriesRoute = ModulesStoriesRouteImport.update({
+  id: '/modules/stories',
+  path: '/modules/stories',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ModulesPostsRoute = ModulesPostsRouteImport.update({
   id: '/modules/posts',
   path: '/modules/posts',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/modules/posts': typeof ModulesPostsRoute
+  '/modules/stories': typeof ModulesStoriesRoute
   '/modules/users-mobile': typeof ModulesUsersMobileRoute
   '/modules/users-web': typeof ModulesUsersWebRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/modules/posts': typeof ModulesPostsRoute
+  '/modules/stories': typeof ModulesStoriesRoute
   '/modules/users-mobile': typeof ModulesUsersMobileRoute
   '/modules/users-web': typeof ModulesUsersWebRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/modules/posts': typeof ModulesPostsRoute
+  '/modules/stories': typeof ModulesStoriesRoute
   '/modules/users-mobile': typeof ModulesUsersMobileRoute
   '/modules/users-web': typeof ModulesUsersWebRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/modules/posts'
+    | '/modules/stories'
     | '/modules/users-mobile'
     | '/modules/users-web'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/modules/posts'
+    | '/modules/stories'
     | '/modules/users-mobile'
     | '/modules/users-web'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/modules/posts'
+    | '/modules/stories'
     | '/modules/users-mobile'
     | '/modules/users-web'
   fileRoutesById: FileRoutesById
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   ModulesPostsRoute: typeof ModulesPostsRoute
+  ModulesStoriesRoute: typeof ModulesStoriesRoute
   ModulesUsersMobileRoute: typeof ModulesUsersMobileRoute
   ModulesUsersWebRoute: typeof ModulesUsersWebRoute
 }
@@ -145,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModulesUsersMobileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/modules/stories': {
+      id: '/modules/stories'
+      path: '/modules/stories'
+      fullPath: '/modules/stories'
+      preLoaderRoute: typeof ModulesStoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/modules/posts': {
       id: '/modules/posts'
       path: '/modules/posts'
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   ModulesPostsRoute: ModulesPostsRoute,
+  ModulesStoriesRoute: ModulesStoriesRoute,
   ModulesUsersMobileRoute: ModulesUsersMobileRoute,
   ModulesUsersWebRoute: ModulesUsersWebRoute,
 }
