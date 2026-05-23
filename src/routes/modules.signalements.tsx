@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AlertTriangle, MapPin, Calendar } from "lucide-react";
+import { AlertTriangle, MapPin, Calendar, Clock, CheckCircle2, Loader2 } from "lucide-react";
 import { ModuleLayout } from "@/components/ModuleLayout";
-import { StatCard, StatusPill } from "@/components/module-bits";
+import { StatusPill } from "@/components/module-bits";
+import { KpiCard, SectionCard, DonutBreakdown, AreaTrend } from "@/components/dashboard";
 import { signalements } from "@/lib/mock-data";
 import { getAuth } from "@/lib/auth";
 
@@ -11,39 +12,68 @@ export const Route = createFileRoute("/modules/signalements")({
   component: Page,
 });
 
-const TABS = ["all", "EN_ATTENTE", "EN_COURS", "RESOLU"] as const;
-type Tab = (typeof TABS)[number];
+const MONTHS = [
+  { label: "Jan", value: 18 },
+  { label: "Fév", value: 22 },
+  { label: "Mar", value: 31 },
+  { label: "Avr", value: 28 },
+  { label: "Mai", value: 42 },
+];
 
 function Page() {
   const navigate = useNavigate();
   useEffect(() => { if (!getAuth()) navigate({ to: "/login" }); }, [navigate]);
 
-  const [tab, setTab] = useState<Tab>("all");
+  const [tab, setTab] = useState<"all" | "EN_ATTENTE" | "EN_COURS" | "RESOLU">("all");
   const filtered = signalements.filter((s) => (tab === "all" ? true : s.statut === tab));
-
   const count = (st: string) => signalements.filter((s) => s.statut === st).length;
+  const taux = Math.round((count("RESOLU") / signalements.length) * 100);
+
+  const categories = Array.from(
+    signalements.reduce((m, s) => m.set(s.categorie, (m.get(s.categorie) ?? 0) + 1), new Map<string, number>())
+  ).map(([label, value]) => ({ label, value }));
 
   return (
     <ModuleLayout
       title="Signalements"
-      description="Traitez les signalements géolocalisés remontés par les citoyens."
-      tabs={[
-        { key: "all", label: `Tous (${signalements.length})`, active: tab === "all", onClick: () => setTab("all") },
-        { key: "EN_ATTENTE", label: `En attente (${count("EN_ATTENTE")})`, active: tab === "EN_ATTENTE", onClick: () => setTab("EN_ATTENTE") },
-        { key: "EN_COURS", label: `En cours (${count("EN_COURS")})`, active: tab === "EN_COURS", onClick: () => setTab("EN_COURS") },
-        { key: "RESOLU", label: `Résolus (${count("RESOLU")})`, active: tab === "RESOLU", onClick: () => setTab("RESOLU") },
-      ]}
+      description="Suivi opérationnel des signalements géolocalisés."
     >
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Total" value={signalements.length} icon={<AlertTriangle className="h-5 w-5" />} />
-        <StatCard label="En attente" value={count("EN_ATTENTE")} />
-        <StatCard label="En cours" value={count("EN_COURS")} />
-        <StatCard label="Résolus" value={count("RESOLU")} />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <KpiCard label="Total signalements" value={signalements.length} delta={9} icon={<AlertTriangle className="h-5 w-5" />} tone="primary" />
+        <KpiCard label="En attente" value={count("EN_ATTENTE")} icon={<Clock className="h-5 w-5" />} tone="warning" />
+        <KpiCard label="En cours" value={count("EN_COURS")} icon={<Loader2 className="h-5 w-5" />} tone="info" />
+        <KpiCard label="Taux résolution" value={`${taux}%`} delta={4} hint={`${count("RESOLU")} résolus`} icon={<CheckCircle2 className="h-5 w-5" />} />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5 mb-6">
+        <SectionCard title="Évolution mensuelle" subtitle="Signalements reçus" className="lg:col-span-3">
+          <AreaTrend data={MONTHS} />
+        </SectionCard>
+        <SectionCard title="Par catégorie" className="lg:col-span-2">
+          <DonutBreakdown data={categories} />
+        </SectionCard>
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-sm font-semibold">Dossiers ({filtered.length})</h2>
+        <div className="flex gap-1 rounded-lg bg-muted p-1">
+          {[
+            { k: "all", l: "Tous" },
+            { k: "EN_ATTENTE", l: "En attente" },
+            { k: "EN_COURS", l: "En cours" },
+            { k: "RESOLU", l: "Résolus" },
+          ].map((t) => (
+            <button key={t.k} onClick={() => setTab(t.k as any)}
+              className={`px-3 py-1.5 text-xs font-medium rounded-md ${tab === t.k ? "bg-card shadow-sm" : "text-muted-foreground"}`}>
+              {t.l}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {filtered.map((s) => (
-          <article key={s.id} className="rounded-xl border border-border bg-card overflow-hidden flex">
+          <article key={s.id} className="rounded-xl border border-border bg-card overflow-hidden flex hover:border-primary/40 transition-colors">
             <div className="w-32 sm:w-40 shrink-0 bg-muted">
               <img src={s.photo} alt={s.categorie} className="h-full w-full object-cover" />
             </div>

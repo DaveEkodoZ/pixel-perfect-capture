@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Lightbulb, Check, X, Clock } from "lucide-react";
+import { Lightbulb, Check, X, Clock, TrendingUp } from "lucide-react";
 import { ModuleLayout } from "@/components/ModuleLayout";
-import { StatCard, StatusPill } from "@/components/module-bits";
+import { StatusPill } from "@/components/module-bits";
+import { KpiCard, SectionCard, DonutBreakdown } from "@/components/dashboard";
 import { idees } from "@/lib/mock-data";
 import { getAuth } from "@/lib/auth";
 
@@ -11,33 +12,65 @@ export const Route = createFileRoute("/modules/idees")({
   component: Page,
 });
 
-const TABS = ["all", "EN_ATTENTE", "VALIDE", "REJETE"] as const;
-type Tab = (typeof TABS)[number];
-
 function Page() {
   const navigate = useNavigate();
   useEffect(() => { if (!getAuth()) navigate({ to: "/login" }); }, [navigate]);
 
-  const [tab, setTab] = useState<Tab>("all");
+  const [tab, setTab] = useState<"all" | "EN_ATTENTE" | "VALIDE" | "REJETE">("all");
   const filtered = idees.filter((i) => (tab === "all" ? true : i.statut === tab));
   const count = (st: string) => idees.filter((i) => i.statut === st).length;
+  const tauxValidation = Math.round((count("VALIDE") / Math.max(1, idees.length)) * 100);
 
   return (
     <ModuleLayout
       title="Idées Citoyennes"
-      description="Examinez les propositions des citoyens et décidez de leur sort."
-      tabs={[
-        { key: "all", label: `Toutes (${idees.length})`, active: tab === "all", onClick: () => setTab("all") },
-        { key: "EN_ATTENTE", label: `En attente (${count("EN_ATTENTE")})`, active: tab === "EN_ATTENTE", onClick: () => setTab("EN_ATTENTE") },
-        { key: "VALIDE", label: `Validées (${count("VALIDE")})`, active: tab === "VALIDE", onClick: () => setTab("VALIDE") },
-        { key: "REJETE", label: `Rejetées (${count("REJETE")})`, active: tab === "REJETE", onClick: () => setTab("REJETE") },
-      ]}
+      description="Pipeline de modération des propositions des citoyens."
     >
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Propositions" value={idees.length} icon={<Lightbulb className="h-5 w-5" />} />
-        <StatCard label="En attente" value={count("EN_ATTENTE")} icon={<Clock className="h-5 w-5" />} />
-        <StatCard label="Validées" value={count("VALIDE")} icon={<Check className="h-5 w-5" />} />
-        <StatCard label="Rejetées" value={count("REJETE")} icon={<X className="h-5 w-5" />} />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <KpiCard label="Propositions" value={idees.length} delta={15} icon={<Lightbulb className="h-5 w-5" />} tone="primary" />
+        <KpiCard label="En attente" value={count("EN_ATTENTE")} hint="à modérer" icon={<Clock className="h-5 w-5" />} tone="warning" />
+        <KpiCard label="Validées" value={count("VALIDE")} icon={<Check className="h-5 w-5" />} />
+        <KpiCard label="Taux validation" value={`${tauxValidation}%`} delta={6} icon={<TrendingUp className="h-5 w-5" />} tone="info" />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+        <SectionCard title="Répartition par statut" className="lg:col-span-2">
+          <DonutBreakdown data={[
+            { label: "En attente", value: count("EN_ATTENTE"), color: "#f59e0b" },
+            { label: "Validées", value: count("VALIDE") },
+            { label: "Rejetées", value: count("REJETE"), color: "#ef4444" },
+          ]} />
+        </SectionCard>
+        <SectionCard title="À traiter en priorité" subtitle={`${count("EN_ATTENTE")} idées en attente`}>
+          <div className="space-y-3">
+            {idees.filter((i) => i.statut === "EN_ATTENTE").slice(0, 4).map((i) => (
+              <div key={i.id} className="flex items-start gap-2 text-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-500 mt-2 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium line-clamp-1">{i.titre}</p>
+                  <p className="text-xs text-muted-foreground">Par {i.auteur} · {i.date}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </SectionCard>
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-sm font-semibold">Propositions ({filtered.length})</h2>
+        <div className="flex gap-1 rounded-lg bg-muted p-1">
+          {[
+            { k: "all", l: "Toutes" },
+            { k: "EN_ATTENTE", l: "En attente" },
+            { k: "VALIDE", l: "Validées" },
+            { k: "REJETE", l: "Rejetées" },
+          ].map((t) => (
+            <button key={t.k} onClick={() => setTab(t.k as any)}
+              className={`px-3 py-1.5 text-xs font-medium rounded-md ${tab === t.k ? "bg-card shadow-sm" : "text-muted-foreground"}`}>
+              {t.l}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
