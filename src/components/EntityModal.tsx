@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertTriangle, Info, Pencil, Plus, type LucideIcon } from "lucide-react";
+import { AlertTriangle, Info, Pencil, Plus, Trash2, Play as PlayIcon, Pause as PauseIcon, type LucideIcon } from "lucide-react";
 
 export type FieldType = "text" | "email" | "tel" | "textarea" | "select" | "url";
 export interface ModalField {
@@ -195,7 +195,7 @@ export function EntityModal({
   );
 }
 
-/** Boutons d'action ligne (Info / Edit / Toggle / Delete). */
+/** Boutons d'action ligne (icônes uniquement, tooltip natif). */
 export function RowActions({
   onInfo,
   onEdit,
@@ -212,45 +212,41 @@ export function RowActions({
   return (
     <div className="inline-flex items-center gap-1">
       {onInfo && (
-        <ActionBtn label="Détails" onClick={onInfo} variant="ghost">
-          <Info className="h-3.5 w-3.5" />
-        </ActionBtn>
+        <IconBtn title="Détails" onClick={onInfo} variant="ghost">
+          <Info className="h-4 w-4" />
+        </IconBtn>
       )}
       {onEdit && (
-        <ActionBtn label="Modifier" onClick={onEdit} variant="ghost">
-          <Pencil className="h-3.5 w-3.5" />
-        </ActionBtn>
+        <IconBtn title="Modifier" onClick={onEdit} variant="ghost">
+          <Pencil className="h-4 w-4" />
+        </IconBtn>
       )}
       {onToggle && (
-        <ActionBtn
-          label={isActive ? "Désactiver" : "Activer"}
+        <IconBtn
+          title={isActive ? "Désactiver" : "Activer"}
           onClick={onToggle}
           variant={isActive ? "warn" : "primary"}
         >
-          <span
-            className={`h-2 w-2 rounded-full ${
-              isActive ? "bg-amber-500" : "bg-primary"
-            }`}
-          />
-        </ActionBtn>
+          {isActive ? <PauseIcon className="h-4 w-4" /> : <PlayIcon className="h-4 w-4" />}
+        </IconBtn>
       )}
       {onDelete && (
-        <ActionBtn label="Supprimer" onClick={onDelete} variant="danger">
-          <AlertTriangle className="h-3.5 w-3.5" />
-        </ActionBtn>
+        <IconBtn title="Supprimer" onClick={onDelete} variant="danger">
+          <Trash2 className="h-4 w-4" />
+        </IconBtn>
       )}
     </div>
   );
 }
 
-function ActionBtn({
+function IconBtn({
   children,
-  label,
+  title,
   onClick,
   variant = "ghost",
 }: {
   children: ReactNode;
-  label: string;
+  title: string;
   onClick: () => void;
   variant?: "ghost" | "danger" | "warn" | "primary";
 }) {
@@ -262,12 +258,13 @@ function ActionBtn({
   };
   return (
     <button
+      type="button"
       onClick={onClick}
-      title={label}
-      className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors ${cls[variant]}`}
+      title={title}
+      aria-label={title}
+      className={`inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors ${cls[variant]}`}
     >
       {children}
-      <span className="hidden xl:inline">{label}</span>
     </button>
   );
 }
