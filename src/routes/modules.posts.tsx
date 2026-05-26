@@ -1,11 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Eye, Heart, Newspaper, TrendingUp, Mail } from "lucide-react";
+import { Plus, Eye, Heart, Newspaper, TrendingUp, Mail, Image as ImageIcon, Upload, HardDrive, Calendar, Copy } from "lucide-react";
 import { ModuleLayout } from "@/components/ModuleLayout";
 import { KpiCard, SectionCard, AreaTrend, BarsCompare } from "@/components/dashboard";
 import { EntityModal, RowActions, type ModalField } from "@/components/EntityModal";
 import { Button } from "@/components/ui/button";
-import { posts as seed } from "@/lib/mock-data";
+import { posts as seed, mediaLibrary as mediaSeed } from "@/lib/mock-data";
 import { getAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/modules/posts")({
@@ -43,7 +43,7 @@ function Page() {
   const engagement = totalVues ? Math.round((totalLikes / totalVues) * 1000) / 10 : 0;
   const topPosts = [...rows].sort((a, b) => b.nb_vues - a.nb_vues).map((p) => ({ label: p.titre.slice(0, 16) + "…", value: p.nb_vues }));
 
-  const counts = { all: rows.length, published, archived };
+  const counts = { all: rows.length, published, archived, media: mediaSeed.length };
   const filtered = useMemo(() => {
     if (section === "published") return rows.filter((p) => p.est_active);
     if (section === "archived") return rows.filter((p) => !p.est_active);
@@ -73,7 +73,7 @@ function Page() {
     <ModuleLayout
       moduleKey="posts" activeSection={section} onSectionChange={setSection} sectionCounts={counts}
       title={titleFor(section)} description="Publications diffusées aux citoyens."
-      actions={section !== "overview" && section !== "stats" ? <Button size="sm" onClick={openAdd}><Plus className="h-4 w-4 mr-1.5" /> Nouvelle actualité</Button> : undefined}
+      actions={section !== "overview" && section !== "stats" && section !== "media" ? <Button size="sm" onClick={openAdd}><Plus className="h-4 w-4 mr-1.5" /> Nouvelle actualité</Button> : section === "media" ? <Button size="sm"><Upload className="h-4 w-4 mr-1.5" /> Téléverser un média</Button> : undefined}
     >
       {section === "overview" && (
         <>
