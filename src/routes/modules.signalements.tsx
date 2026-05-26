@@ -105,7 +105,9 @@ function Page() {
             <KpiCard label="En cours" value={count("EN_COURS")} icon={<Loader2 className="h-5 w-5" />} tone="info" />
             <KpiCard label="Résolus" value={count("RESOLU")} icon={<CheckCircle2 className="h-5 w-5" />} />
           </div>
-          <SignalementsMap items={rows} onSelect={openInfo} />
+          <Suspense fallback={<div className="h-[540px] rounded-xl border border-border bg-muted/40 flex items-center justify-center text-sm text-muted-foreground">Chargement de la carte…</div>}>
+            <SignalementsMap items={rows} onSelect={openInfo} />
+          </Suspense>
         </div>
       )}
 
