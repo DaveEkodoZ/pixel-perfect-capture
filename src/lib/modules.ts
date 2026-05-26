@@ -23,6 +23,10 @@ import {
   Clock,
   Check,
   X,
+  Map as MapIcon,
+  Images,
+  TrendingUp,
+  PieChart,
   type LucideIcon,
 } from "lucide-react";
 
@@ -41,7 +45,8 @@ export type ModuleKey =
   | "sondages"
   | "signalements"
   | "posts"
-  | "idees";
+  | "idees"
+  | "statistiques";
 
 export interface ModuleSection {
   key: string;
