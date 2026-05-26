@@ -5,6 +5,7 @@ import { ModuleLayout } from "@/components/ModuleLayout";
 import { StatusPill } from "@/components/module-bits";
 import { KpiCard, SectionCard, DonutBreakdown, AreaTrend } from "@/components/dashboard";
 import { EntityModal, RowActions, type ModalField } from "@/components/EntityModal";
+import { SignalementsMap } from "@/components/SignalementsMap";
 import { Button } from "@/components/ui/button";
 import { signalements as seed } from "@/lib/mock-data";
 import { getAuth } from "@/lib/auth";
