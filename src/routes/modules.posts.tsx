@@ -97,6 +97,52 @@ function Page() {
         </div>
       )}
 
+      {section === "media" && (
+        <>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <KpiCard label="Médias" value={mediaSeed.length} icon={<ImageIcon className="h-5 w-5" />} tone="primary" />
+            <KpiCard label="Utilisés" value={mediaSeed.filter(m => m.usage !== "—").length} hint="liés à un post" icon={<Newspaper className="h-5 w-5" />} />
+            <KpiCard label="Disponibles" value={mediaSeed.filter(m => m.usage === "—").length} icon={<Upload className="h-5 w-5" />} tone="info" />
+            <KpiCard label="Espace utilisé" value="14.3 MB" hint="/ 5 GB" icon={<HardDrive className="h-5 w-5" />} />
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-sm font-semibold">Bibliothèque de médias</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">Téléversez et réutilisez les images des actualités. L'upload se fait via un endpoint dédié.</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {mediaSeed.map((m) => (
+                <div key={m.id} className="group rounded-lg border border-border overflow-hidden bg-background hover:border-primary/40 hover:shadow-md transition-all">
+                  <div className="aspect-square bg-muted overflow-hidden relative">
+                    <img src={m.url} alt={m.titre} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    {m.usage !== "—" && (
+                      <span className="absolute top-2 left-2 rounded-full bg-primary/90 backdrop-blur text-primary-foreground text-[10px] font-medium px-2 py-0.5">
+                        Utilisé
+                      </span>
+                    )}
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <button title="Copier l'URL" onClick={() => navigator.clipboard?.writeText(m.url)} className="h-8 w-8 rounded-md bg-white text-foreground inline-flex items-center justify-center hover:bg-primary hover:text-primary-foreground">
+                        <Copy className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="p-3">
+                    <p className="text-sm font-medium truncate">{m.titre}</p>
+                    <div className="mt-1 flex items-center justify-between text-[11px] text-muted-foreground">
+                      <span className="inline-flex items-center gap-1"><HardDrive className="h-3 w-3" />{m.taille}</span>
+                      <span className="inline-flex items-center gap-1"><Calendar className="h-3 w-3" />{m.date}</span>
+                    </div>
+                    <div className="mt-1 text-[11px] text-muted-foreground truncate">Lié à : <span className="font-medium text-foreground">{m.usage}</span></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
       {(section === "all" || section === "published" || section === "archived") && (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
           {filtered.map((p) => (
@@ -154,6 +200,7 @@ function titleFor(s: string) {
     case "all": return "Toutes les publications";
     case "published": return "Publications en ligne";
     case "archived": return "Publications archivées";
+    case "media": return "Médiathèque des actualités";
     case "stats": return "Statistiques détaillées";
     default: return "Posts";
   }
