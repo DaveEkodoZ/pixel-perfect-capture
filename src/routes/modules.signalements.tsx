@@ -32,6 +32,8 @@ const FIELDS: ModalField[] = [
   { name: "statut", label: "Statut", type: "select", required: true, options: [
     { value: "EN_ATTENTE", label: "En attente" }, { value: "EN_COURS", label: "En cours" }, { value: "RESOLU", label: "Résolu" }] },
   { name: "photo", label: "Photo (URL)", type: "url" },
+  { name: "lat", label: "Latitude", placeholder: "3.8480" },
+  { name: "lng", label: "Longitude", placeholder: "11.5021" },
 ];
 
 function Page() {
@@ -46,13 +48,13 @@ function Page() {
   const count = (st: string) => rows.filter((s) => s.statut === st).length;
   const taux = rows.length ? Math.round((count("RESOLU") / rows.length) * 100) : 0;
 
-  const counts = { all: rows.length, EN_ATTENTE: count("EN_ATTENTE"), EN_COURS: count("EN_COURS"), RESOLU: count("RESOLU") };
-  const filtered = useMemo(() => section === "all" || section === "overview" ? rows : rows.filter((s) => s.statut === section), [rows, section]);
+  const counts = { all: rows.length, map: rows.length, EN_ATTENTE: count("EN_ATTENTE"), EN_COURS: count("EN_COURS"), RESOLU: count("RESOLU") };
+  const filtered = useMemo(() => section === "all" || section === "overview" || section === "map" ? rows : rows.filter((s) => s.statut === section), [rows, section]);
 
   const categories = Array.from(rows.reduce((m, s) => m.set(s.categorie, (m.get(s.categorie) ?? 0) + 1), new Map<string, number>()))
     .map(([label, value]) => ({ label, value }));
 
-  const openAdd = () => { setDraft({ ville: "Yaoundé", statut: "EN_ATTENTE", photo: "https://images.unsplash.com/photo-1545158535-c3f7168c28b6?w=400" }); setModal({ mode: "add" }); };
+  const openAdd = () => { setDraft({ ville: "Yaoundé", statut: "EN_ATTENTE", lat: 3.8480, lng: 11.5021, photo: "https://images.unsplash.com/photo-1545158535-c3f7168c28b6?w=400" }); setModal({ mode: "add" }); };
   const openEdit = (row: Sig) => { setDraft(row); setModal({ mode: "edit", row }); };
   const openInfo = (row: Sig) => setModal({ mode: "info", row });
   const openDelete = (row: Sig) => setModal({ mode: "confirm", row });
@@ -62,9 +64,9 @@ function Page() {
     if (modal.mode === "add") {
       const id = Math.max(0, ...rows.map((r) => r.id)) + 1;
       const date = new Date().toISOString().slice(0, 10);
-      setRows((r) => [{ id, date, ...draft } as Sig, ...r]);
+      setRows((r) => [{ id, date, ...draft, lat: Number(draft.lat), lng: Number(draft.lng) } as Sig, ...r]);
     } else if (modal.mode === "edit" && modal.row) {
-      setRows((r) => r.map((s) => s.id === modal.row!.id ? { ...s, ...draft } as Sig : s));
+      setRows((r) => r.map((s) => s.id === modal.row!.id ? { ...s, ...draft, lat: Number(draft.lat), lng: Number(draft.lng) } as Sig : s));
     } else if (modal.mode === "confirm" && modal.row) {
       setRows((r) => r.filter((s) => s.id !== modal.row!.id));
     }
