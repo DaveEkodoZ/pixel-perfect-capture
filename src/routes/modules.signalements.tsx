@@ -1,14 +1,17 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, lazy, Suspense } from "react";
 import { AlertTriangle, MapPin, Calendar, Clock, CheckCircle2, Loader2, Plus } from "lucide-react";
 import { ModuleLayout } from "@/components/ModuleLayout";
 import { StatusPill } from "@/components/module-bits";
 import { KpiCard, SectionCard, DonutBreakdown, AreaTrend } from "@/components/dashboard";
 import { EntityModal, RowActions, type ModalField } from "@/components/EntityModal";
-import { SignalementsMap } from "@/components/SignalementsMap";
 import { Button } from "@/components/ui/button";
 import { signalements as seed } from "@/lib/mock-data";
 import { getAuth } from "@/lib/auth";
+
+const SignalementsMap = lazy(() =>
+  import("@/components/SignalementsMap").then((m) => ({ default: m.SignalementsMap }))
+);
 
 export const Route = createFileRoute("/modules/signalements")({
   head: () => ({ meta: [{ title: "Signalements — CUY" }] }),
