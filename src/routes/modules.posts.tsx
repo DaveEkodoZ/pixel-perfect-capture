@@ -1,11 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Eye, Heart, Newspaper, TrendingUp, Mail } from "lucide-react";
+import { Plus, Eye, Heart, Newspaper, TrendingUp, Mail, Image as ImageIcon, Upload, HardDrive, Calendar, Copy } from "lucide-react";
 import { ModuleLayout } from "@/components/ModuleLayout";
 import { KpiCard, SectionCard, AreaTrend, BarsCompare } from "@/components/dashboard";
 import { EntityModal, RowActions, type ModalField } from "@/components/EntityModal";
 import { Button } from "@/components/ui/button";
-import { posts as seed } from "@/lib/mock-data";
+import { posts as seed, mediaLibrary as mediaSeed } from "@/lib/mock-data";
 import { getAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/modules/posts")({
@@ -43,7 +43,7 @@ function Page() {
   const engagement = totalVues ? Math.round((totalLikes / totalVues) * 1000) / 10 : 0;
   const topPosts = [...rows].sort((a, b) => b.nb_vues - a.nb_vues).map((p) => ({ label: p.titre.slice(0, 16) + "…", value: p.nb_vues }));
 
-  const counts = { all: rows.length, published, archived };
+  const counts = { all: rows.length, published, archived, media: mediaSeed.length };
   const filtered = useMemo(() => {
     if (section === "published") return rows.filter((p) => p.est_active);
     if (section === "archived") return rows.filter((p) => !p.est_active);
@@ -73,7 +73,7 @@ function Page() {
     <ModuleLayout
       moduleKey="posts" activeSection={section} onSectionChange={setSection} sectionCounts={counts}
       title={titleFor(section)} description="Publications diffusées aux citoyens."
-      actions={section !== "overview" && section !== "stats" ? <Button size="sm" onClick={openAdd}><Plus className="h-4 w-4 mr-1.5" /> Nouvelle actualité</Button> : undefined}
+      actions={section !== "overview" && section !== "stats" && section !== "media" ? <Button size="sm" onClick={openAdd}><Plus className="h-4 w-4 mr-1.5" /> Nouvelle actualité</Button> : section === "media" ? <Button size="sm"><Upload className="h-4 w-4 mr-1.5" /> Téléverser un média</Button> : undefined}
     >
       {section === "overview" && (
         <>
@@ -95,6 +95,52 @@ function Page() {
           <SectionCard title="Évolution des vues"><AreaTrend data={VIEWS} height={260} /></SectionCard>
           <SectionCard title="Top publications"><BarsCompare data={topPosts} height={260} /></SectionCard>
         </div>
+      )}
+
+      {section === "media" && (
+        <>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <KpiCard label="Médias" value={mediaSeed.length} icon={<ImageIcon className="h-5 w-5" />} tone="primary" />
+            <KpiCard label="Utilisés" value={mediaSeed.filter(m => m.usage !== "—").length} hint="liés à un post" icon={<Newspaper className="h-5 w-5" />} />
+            <KpiCard label="Disponibles" value={mediaSeed.filter(m => m.usage === "—").length} icon={<Upload className="h-5 w-5" />} tone="info" />
+            <KpiCard label="Espace utilisé" value="14.3 MB" hint="/ 5 GB" icon={<HardDrive className="h-5 w-5" />} />
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-sm font-semibold">Bibliothèque de médias</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">Téléversez et réutilisez les images des actualités. L'upload se fait via un endpoint dédié.</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {mediaSeed.map((m) => (
+                <div key={m.id} className="group rounded-lg border border-border overflow-hidden bg-background hover:border-primary/40 hover:shadow-md transition-all">
+                  <div className="aspect-square bg-muted overflow-hidden relative">
+                    <img src={m.url} alt={m.titre} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    {m.usage !== "—" && (
+                      <span className="absolute top-2 left-2 rounded-full bg-primary/90 backdrop-blur text-primary-foreground text-[10px] font-medium px-2 py-0.5">
+                        Utilisé
+                      </span>
+                    )}
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <button title="Copier l'URL" onClick={() => navigator.clipboard?.writeText(m.url)} className="h-8 w-8 rounded-md bg-white text-foreground inline-flex items-center justify-center hover:bg-primary hover:text-primary-foreground">
+                        <Copy className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="p-3">
+                    <p className="text-sm font-medium truncate">{m.titre}</p>
+                    <div className="mt-1 flex items-center justify-between text-[11px] text-muted-foreground">
+                      <span className="inline-flex items-center gap-1"><HardDrive className="h-3 w-3" />{m.taille}</span>
+                      <span className="inline-flex items-center gap-1"><Calendar className="h-3 w-3" />{m.date}</span>
+                    </div>
+                    <div className="mt-1 text-[11px] text-muted-foreground truncate">Lié à : <span className="font-medium text-foreground">{m.usage}</span></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
       )}
 
       {(section === "all" || section === "published" || section === "archived") && (
@@ -154,6 +200,7 @@ function titleFor(s: string) {
     case "all": return "Toutes les publications";
     case "published": return "Publications en ligne";
     case "archived": return "Publications archivées";
+    case "media": return "Médiathèque des actualités";
     case "stats": return "Statistiques détaillées";
     default: return "Posts";
   }

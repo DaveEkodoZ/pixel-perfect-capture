@@ -98,7 +98,7 @@ function DashboardPage() {
         <div className="flex items-end justify-between mb-6">
           <div>
             <h2 className="text-2xl font-bold tracking-tight">Modules de gestion</h2>
-            <p className="text-sm text-muted-foreground mt-1">7 modules disponibles · Sélectionnez pour ouvrir le tableau de bord dédié</p>
+            <p className="text-sm text-muted-foreground mt-1">{MODULES.length} modules disponibles · Sélectionnez pour ouvrir le tableau de bord dédié</p>
           </div>
           <div className="hidden md:inline-flex items-center gap-1.5 text-xs text-muted-foreground">
             <TrendingUp className="h-3.5 w-3.5 text-primary" /> Mises à jour temps réel
@@ -163,6 +163,8 @@ function moduleStats(key: string): { value: string; label: string } {
       return { value: String(signalements.length), label: "dossiers" };
     case "idees":
       return { value: String(idees.length), label: "propositions" };
+    case "statistiques":
+      return { value: "BI", label: "tableau de bord global" };
     default:
       return { value: "—", label: "" };
   }

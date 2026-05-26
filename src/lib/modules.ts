@@ -23,6 +23,10 @@ import {
   Clock,
   Check,
   X,
+  Map as MapIcon,
+  Images,
+  TrendingUp,
+  PieChart,
   type LucideIcon,
 } from "lucide-react";
 
@@ -41,7 +45,8 @@ export type ModuleKey =
   | "sondages"
   | "signalements"
   | "posts"
-  | "idees";
+  | "idees"
+  | "statistiques";
 
 export interface ModuleSection {
   key: string;
@@ -103,6 +108,7 @@ export const MODULES: ModuleInfo[] = [
       { key: "all", label: "Toutes les publications", icon: Newspaper },
       { key: "published", label: "Publiés", icon: Eye },
       { key: "archived", label: "Archivés", icon: Archive },
+      { key: "media", label: "Médiathèque", icon: Images },
       { key: "stats", label: "Statistiques", icon: BarChart3 },
     ],
   },
@@ -146,6 +152,7 @@ export const MODULES: ModuleInfo[] = [
     sections: [
       { key: "overview", label: "Vue d'ensemble", icon: LayoutGrid },
       { key: "all", label: "Tous les dossiers", icon: AlertTriangle },
+      { key: "map", label: "Carte interactive", icon: MapIcon },
       { key: "EN_ATTENTE", label: "En attente", icon: Clock },
       { key: "EN_COURS", label: "En cours", icon: Loader2 },
       { key: "RESOLU", label: "Résolus", icon: CheckCircle2 },
@@ -164,6 +171,23 @@ export const MODULES: ModuleInfo[] = [
       { key: "EN_ATTENTE", label: "En attente", icon: Clock },
       { key: "VALIDE", label: "Validées", icon: Check },
       { key: "REJETE", label: "Rejetées", icon: X },
+    ],
+  },
+  {
+    key: "statistiques",
+    path: "/modules/statistiques",
+    title: "Statistiques BI",
+    short: "BI",
+    description: "Tableau de bord analytique de toute l'activité de la plateforme.",
+    icon: BarChart3,
+    sections: [
+      { key: "overview", label: "Vue exécutive", icon: LayoutGrid },
+      { key: "engagement", label: "Engagement", icon: Activity },
+      { key: "content", label: "Contenu & médias", icon: Newspaper },
+      { key: "operations", label: "Opérations citoyennes", icon: AlertTriangle },
+      { key: "audience", label: "Audience", icon: Users },
+      { key: "trends", label: "Tendances", icon: TrendingUp },
+      { key: "distribution", label: "Répartitions", icon: PieChart },
     ],
   },
 ];

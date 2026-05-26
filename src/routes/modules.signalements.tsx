@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, lazy, Suspense } from "react";
 import { AlertTriangle, MapPin, Calendar, Clock, CheckCircle2, Loader2, Plus } from "lucide-react";
 import { ModuleLayout } from "@/components/ModuleLayout";
 import { StatusPill } from "@/components/module-bits";
@@ -8,6 +8,10 @@ import { EntityModal, RowActions, type ModalField } from "@/components/EntityMod
 import { Button } from "@/components/ui/button";
 import { signalements as seed } from "@/lib/mock-data";
 import { getAuth } from "@/lib/auth";
+
+const SignalementsMap = lazy(() =>
+  import("@/components/SignalementsMap").then((m) => ({ default: m.SignalementsMap }))
+);
 
 export const Route = createFileRoute("/modules/signalements")({
   head: () => ({ meta: [{ title: "Signalements — CUY" }] }),
@@ -31,6 +35,8 @@ const FIELDS: ModalField[] = [
   { name: "statut", label: "Statut", type: "select", required: true, options: [
     { value: "EN_ATTENTE", label: "En attente" }, { value: "EN_COURS", label: "En cours" }, { value: "RESOLU", label: "Résolu" }] },
   { name: "photo", label: "Photo (URL)", type: "url" },
+  { name: "lat", label: "Latitude", placeholder: "3.8480" },
+  { name: "lng", label: "Longitude", placeholder: "11.5021" },
 ];
 
 function Page() {
@@ -45,13 +51,13 @@ function Page() {
   const count = (st: string) => rows.filter((s) => s.statut === st).length;
   const taux = rows.length ? Math.round((count("RESOLU") / rows.length) * 100) : 0;
 
-  const counts = { all: rows.length, EN_ATTENTE: count("EN_ATTENTE"), EN_COURS: count("EN_COURS"), RESOLU: count("RESOLU") };
-  const filtered = useMemo(() => section === "all" || section === "overview" ? rows : rows.filter((s) => s.statut === section), [rows, section]);
+  const counts = { all: rows.length, map: rows.length, EN_ATTENTE: count("EN_ATTENTE"), EN_COURS: count("EN_COURS"), RESOLU: count("RESOLU") };
+  const filtered = useMemo(() => section === "all" || section === "overview" || section === "map" ? rows : rows.filter((s) => s.statut === section), [rows, section]);
 
   const categories = Array.from(rows.reduce((m, s) => m.set(s.categorie, (m.get(s.categorie) ?? 0) + 1), new Map<string, number>()))
     .map(([label, value]) => ({ label, value }));
 
-  const openAdd = () => { setDraft({ ville: "Yaoundé", statut: "EN_ATTENTE", photo: "https://images.unsplash.com/photo-1545158535-c3f7168c28b6?w=400" }); setModal({ mode: "add" }); };
+  const openAdd = () => { setDraft({ ville: "Yaoundé", statut: "EN_ATTENTE", lat: 3.8480, lng: 11.5021, photo: "https://images.unsplash.com/photo-1545158535-c3f7168c28b6?w=400" }); setModal({ mode: "add" }); };
   const openEdit = (row: Sig) => { setDraft(row); setModal({ mode: "edit", row }); };
   const openInfo = (row: Sig) => setModal({ mode: "info", row });
   const openDelete = (row: Sig) => setModal({ mode: "confirm", row });
@@ -61,9 +67,9 @@ function Page() {
     if (modal.mode === "add") {
       const id = Math.max(0, ...rows.map((r) => r.id)) + 1;
       const date = new Date().toISOString().slice(0, 10);
-      setRows((r) => [{ id, date, ...draft } as Sig, ...r]);
+      setRows((r) => [{ id, date, ...draft, lat: Number(draft.lat), lng: Number(draft.lng) } as Sig, ...r]);
     } else if (modal.mode === "edit" && modal.row) {
-      setRows((r) => r.map((s) => s.id === modal.row!.id ? { ...s, ...draft } as Sig : s));
+      setRows((r) => r.map((s) => s.id === modal.row!.id ? { ...s, ...draft, lat: Number(draft.lat), lng: Number(draft.lng) } as Sig : s));
     } else if (modal.mode === "confirm" && modal.row) {
       setRows((r) => r.filter((s) => s.id !== modal.row!.id));
     }
@@ -91,7 +97,21 @@ function Page() {
         </>
       )}
 
-      {section !== "overview" && (
+      {section === "map" && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <KpiCard label="Points cartographiés" value={rows.length} icon={<MapPin className="h-5 w-5" />} tone="primary" />
+            <KpiCard label="En attente" value={count("EN_ATTENTE")} icon={<Clock className="h-5 w-5" />} tone="warning" />
+            <KpiCard label="En cours" value={count("EN_COURS")} icon={<Loader2 className="h-5 w-5" />} tone="info" />
+            <KpiCard label="Résolus" value={count("RESOLU")} icon={<CheckCircle2 className="h-5 w-5" />} />
+          </div>
+          <Suspense fallback={<div className="h-[540px] rounded-xl border border-border bg-muted/40 flex items-center justify-center text-sm text-muted-foreground">Chargement de la carte…</div>}>
+            <SignalementsMap items={rows} onSelect={openInfo} />
+          </Suspense>
+        </div>
+      )}
+
+      {section !== "overview" && section !== "map" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {filtered.map((s) => (
             <article key={s.id} className="rounded-xl border border-border bg-card overflow-hidden flex hover:border-primary/40 transition-colors">
@@ -128,6 +148,7 @@ function Page() {
             { label: "Catégorie", value: modal.row.categorie },
             { label: "Description", value: modal.row.description },
             { label: "Lieu", value: `${modal.row.quartier}, ${modal.row.ville}` },
+            { label: "Coordonnées", value: `${modal.row.lat}, ${modal.row.lng}` },
             { label: "Date", value: modal.row.date },
             { label: "Statut", value: <StatusPill status={modal.row.statut} /> },
             { label: "Photo", value: <img src={modal.row.photo} alt="" className="w-40 rounded-md" /> },
@@ -144,6 +165,7 @@ function titleFor(s: string) {
   switch (s) {
     case "overview": return "Vue d'ensemble — Signalements";
     case "all": return "Tous les signalements";
+    case "map": return "Carte interactive des signalements";
     case "EN_ATTENTE": return "Signalements en attente";
     case "EN_COURS": return "Signalements en cours";
     case "RESOLU": return "Signalements résolus";

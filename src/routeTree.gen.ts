@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ModulesUsersWebRouteImport } from './routes/modules.users-web'
 import { Route as ModulesUsersMobileRouteImport } from './routes/modules.users-mobile'
 import { Route as ModulesStoriesRouteImport } from './routes/modules.stories'
+import { Route as ModulesStatistiquesRouteImport } from './routes/modules.statistiques'
 import { Route as ModulesSondagesRouteImport } from './routes/modules.sondages'
 import { Route as ModulesSignalementsRouteImport } from './routes/modules.signalements'
 import { Route as ModulesPostsRouteImport } from './routes/modules.posts'
@@ -50,6 +51,11 @@ const ModulesStoriesRoute = ModulesStoriesRouteImport.update({
   path: '/modules/stories',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModulesStatistiquesRoute = ModulesStatistiquesRouteImport.update({
+  id: '/modules/statistiques',
+  path: '/modules/statistiques',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ModulesSondagesRoute = ModulesSondagesRouteImport.update({
   id: '/modules/sondages',
   path: '/modules/sondages',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/modules/posts': typeof ModulesPostsRoute
   '/modules/signalements': typeof ModulesSignalementsRoute
   '/modules/sondages': typeof ModulesSondagesRoute
+  '/modules/statistiques': typeof ModulesStatistiquesRoute
   '/modules/stories': typeof ModulesStoriesRoute
   '/modules/users-mobile': typeof ModulesUsersMobileRoute
   '/modules/users-web': typeof ModulesUsersWebRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/modules/posts': typeof ModulesPostsRoute
   '/modules/signalements': typeof ModulesSignalementsRoute
   '/modules/sondages': typeof ModulesSondagesRoute
+  '/modules/statistiques': typeof ModulesStatistiquesRoute
   '/modules/stories': typeof ModulesStoriesRoute
   '/modules/users-mobile': typeof ModulesUsersMobileRoute
   '/modules/users-web': typeof ModulesUsersWebRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/modules/posts': typeof ModulesPostsRoute
   '/modules/signalements': typeof ModulesSignalementsRoute
   '/modules/sondages': typeof ModulesSondagesRoute
+  '/modules/statistiques': typeof ModulesStatistiquesRoute
   '/modules/stories': typeof ModulesStoriesRoute
   '/modules/users-mobile': typeof ModulesUsersMobileRoute
   '/modules/users-web': typeof ModulesUsersWebRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/modules/posts'
     | '/modules/signalements'
     | '/modules/sondages'
+    | '/modules/statistiques'
     | '/modules/stories'
     | '/modules/users-mobile'
     | '/modules/users-web'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/modules/posts'
     | '/modules/signalements'
     | '/modules/sondages'
+    | '/modules/statistiques'
     | '/modules/stories'
     | '/modules/users-mobile'
     | '/modules/users-web'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/modules/posts'
     | '/modules/signalements'
     | '/modules/sondages'
+    | '/modules/statistiques'
     | '/modules/stories'
     | '/modules/users-mobile'
     | '/modules/users-web'
@@ -155,6 +167,7 @@ export interface RootRouteChildren {
   ModulesPostsRoute: typeof ModulesPostsRoute
   ModulesSignalementsRoute: typeof ModulesSignalementsRoute
   ModulesSondagesRoute: typeof ModulesSondagesRoute
+  ModulesStatistiquesRoute: typeof ModulesStatistiquesRoute
   ModulesStoriesRoute: typeof ModulesStoriesRoute
   ModulesUsersMobileRoute: typeof ModulesUsersMobileRoute
   ModulesUsersWebRoute: typeof ModulesUsersWebRoute
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModulesStoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/modules/statistiques': {
+      id: '/modules/statistiques'
+      path: '/modules/statistiques'
+      fullPath: '/modules/statistiques'
+      preLoaderRoute: typeof ModulesStatistiquesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/modules/sondages': {
       id: '/modules/sondages'
       path: '/modules/sondages'
@@ -243,6 +263,7 @@ const rootRouteChildren: RootRouteChildren = {
   ModulesPostsRoute: ModulesPostsRoute,
   ModulesSignalementsRoute: ModulesSignalementsRoute,
   ModulesSondagesRoute: ModulesSondagesRoute,
+  ModulesStatistiquesRoute: ModulesStatistiquesRoute,
   ModulesStoriesRoute: ModulesStoriesRoute,
   ModulesUsersMobileRoute: ModulesUsersMobileRoute,
   ModulesUsersWebRoute: ModulesUsersWebRoute,
