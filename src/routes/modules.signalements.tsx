@@ -94,7 +94,19 @@ function Page() {
         </>
       )}
 
-      {section !== "overview" && (
+      {section === "map" && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <KpiCard label="Points cartographiés" value={rows.length} icon={<MapPin className="h-5 w-5" />} tone="primary" />
+            <KpiCard label="En attente" value={count("EN_ATTENTE")} icon={<Clock className="h-5 w-5" />} tone="warning" />
+            <KpiCard label="En cours" value={count("EN_COURS")} icon={<Loader2 className="h-5 w-5" />} tone="info" />
+            <KpiCard label="Résolus" value={count("RESOLU")} icon={<CheckCircle2 className="h-5 w-5" />} />
+          </div>
+          <SignalementsMap items={rows} onSelect={openInfo} />
+        </div>
+      )}
+
+      {section !== "overview" && section !== "map" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {filtered.map((s) => (
             <article key={s.id} className="rounded-xl border border-border bg-card overflow-hidden flex hover:border-primary/40 transition-colors">
@@ -131,6 +143,7 @@ function Page() {
             { label: "Catégorie", value: modal.row.categorie },
             { label: "Description", value: modal.row.description },
             { label: "Lieu", value: `${modal.row.quartier}, ${modal.row.ville}` },
+            { label: "Coordonnées", value: `${modal.row.lat}, ${modal.row.lng}` },
             { label: "Date", value: modal.row.date },
             { label: "Statut", value: <StatusPill status={modal.row.statut} /> },
             { label: "Photo", value: <img src={modal.row.photo} alt="" className="w-40 rounded-md" /> },
@@ -147,6 +160,7 @@ function titleFor(s: string) {
   switch (s) {
     case "overview": return "Vue d'ensemble — Signalements";
     case "all": return "Tous les signalements";
+    case "map": return "Carte interactive des signalements";
     case "EN_ATTENTE": return "Signalements en attente";
     case "EN_COURS": return "Signalements en cours";
     case "RESOLU": return "Signalements résolus";
