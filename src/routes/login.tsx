@@ -35,7 +35,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-[1.05fr_1fr] bg-background">
+    <div className="min-h-screen grid lg:grid-cols-2 bg-background">
       {/* Left visual panel — minimal, logo-forward */}
       <div
         className="hidden lg:flex flex-col items-center justify-center p-12 relative overflow-hidden text-primary-foreground"
