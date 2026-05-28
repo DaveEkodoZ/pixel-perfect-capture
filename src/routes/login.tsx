@@ -36,55 +36,26 @@ function LoginPage() {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-[1.05fr_1fr] bg-background">
-      {/* Left visual panel */}
+      {/* Left visual panel — minimal, logo-forward */}
       <div
-        className="hidden lg:flex flex-col justify-between p-12 relative overflow-hidden text-primary-foreground"
+        className="hidden lg:flex flex-col items-center justify-center p-12 relative overflow-hidden text-primary-foreground"
         style={{ background: "var(--gradient-primary)" }}
       >
-        {/* Decorative layers */}
-        <div className="absolute inset-0 opacity-[0.12]"
-             style={{ backgroundImage: "radial-gradient(circle at 20% 30%, white 0, transparent 40%), radial-gradient(circle at 80% 70%, white 0, transparent 40%)" }} />
-        <div className="absolute -bottom-40 -right-40 h-[28rem] w-[28rem] rounded-full bg-white/10 blur-3xl" />
-        <div className="absolute top-1/4 -left-24 h-72 w-72 rounded-full bg-white/15 blur-2xl" />
-        <div className="absolute inset-0"
-             style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)", backgroundSize: "48px 48px", maskImage: "linear-gradient(180deg, transparent, black 30%, black 70%, transparent)" }} />
+        <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -bottom-40 -right-32 h-[28rem] w-[28rem] rounded-full bg-white/10 blur-3xl" />
 
-        <div className="relative z-10 flex items-center gap-3">
-          <img src={LOGO} alt="Logo CUY" className="h-14 w-14 object-contain bg-white rounded-xl p-1.5 shadow-lg" />
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.25em] opacity-80">République du Cameroun</div>
-            <div className="text-lg font-bold leading-tight">{BRAND.name}</div>
+        <div className="relative z-10 flex flex-col items-center text-center">
+          <div className="rounded-[2rem] bg-white/95 p-10 shadow-2xl ring-1 ring-white/40">
+            <img src={LOGO} alt="Logo CUY" className="h-64 w-64 object-contain" />
           </div>
+          <div className="mt-10 text-[11px] uppercase tracking-[0.35em] opacity-80">
+            République du Cameroun
+          </div>
+          <div className="mt-2 text-2xl font-bold tracking-tight">{BRAND.name}</div>
         </div>
 
-        <div className="relative z-10 max-w-md">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur px-3 py-1 text-xs font-medium mb-5 border border-white/20">
-            <ShieldCheck className="h-3.5 w-3.5" /> Espace sécurisé
-          </div>
-          <h2 className="text-5xl font-bold leading-[1.05] tracking-tight">
-            Une ville moderne, <br />
-            <span className="italic font-normal opacity-90">à l'écoute</span> de ses citoyens.
-          </h2>
-          <p className="mt-5 text-primary-foreground/90 text-base leading-relaxed">
-            Centralisez actualités, signalements, sondages et idées des habitants de Yaoundé dans une plateforme unifiée et performante.
-          </p>
-
-          <div className="mt-10 grid grid-cols-3 gap-4">
-            {[
-              { v: "12 547", l: "Citoyens" },
-              { v: "98%", l: "Disponibilité" },
-              { v: "24/7", l: "Support" },
-            ].map((s) => (
-              <div key={s.l} className="rounded-xl border border-white/20 bg-white/10 backdrop-blur px-4 py-3">
-                <div className="text-2xl font-bold">{s.v}</div>
-                <div className="text-[11px] uppercase tracking-wider opacity-80">{s.l}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="relative z-10 text-primary-foreground/80 text-xs">
-          © {new Date().getFullYear()} {BRAND.name}. Tous droits réservés.
+        <div className="absolute bottom-8 left-0 right-0 text-center text-primary-foreground/70 text-xs">
+          © {new Date().getFullYear()} {BRAND.short}
         </div>
       </div>
 
