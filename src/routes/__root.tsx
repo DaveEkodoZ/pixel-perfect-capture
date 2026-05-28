@@ -113,7 +113,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <RouteTransitionLoader />
       <Outlet />
+      <Toaster position="top-right" richColors />
     </QueryClientProvider>
   );
 }
