@@ -45,9 +45,7 @@ function LoginPage() {
         <div className="absolute -bottom-40 -right-32 h-[28rem] w-[28rem] rounded-full bg-white/10 blur-3xl" />
 
         <div className="relative z-10 flex flex-col items-center text-center">
-          <div className="rounded-[2rem] bg-white/95 p-10 shadow-2xl ring-1 ring-white/40">
-            <img src={LOGO} alt="Logo CUY" className="h-64 w-64 object-contain" />
-          </div>
+          <img src={LOGO} alt="Logo CUY" className="h-72 w-72 object-contain drop-shadow-2xl" />
           <div className="mt-10 text-[11px] uppercase tracking-[0.35em] opacity-80">
             République du Cameroun
           </div>
