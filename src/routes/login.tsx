@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Mail, Lock, ArrowRight, ShieldCheck, Eye, EyeOff } from "lucide-react";
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -26,12 +27,28 @@ function LoginPage() {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) return;
+    if (!email || !password) {
+      toast.error("Champs requis", {
+        description: "Veuillez renseigner votre email et votre mot de passe.",
+      });
+      return;
+    }
     setLoading(true);
     setTimeout(() => {
+      // Simple mock validation: password must be at least 4 chars
+      if (password.length < 4) {
+        setLoading(false);
+        toast.error("Échec de la connexion", {
+          description: "Identifiants invalides. Veuillez réessayer.",
+        });
+        return;
+      }
       login(email);
-      navigate({ to: "/dashboard" });
-    }, 500);
+      toast.success("Connexion réussie", {
+        description: `Bienvenue, ${email}`,
+      });
+      setTimeout(() => navigate({ to: "/dashboard" }), 400);
+    }, 700);
   };
 
   return (
