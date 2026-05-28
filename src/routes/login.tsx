@@ -45,9 +45,7 @@ function LoginPage() {
         <div className="absolute -bottom-40 -right-32 h-[28rem] w-[28rem] rounded-full bg-white/10 blur-3xl" />
 
         <div className="relative z-10 flex flex-col items-center text-center">
-          <div className="rounded-[2rem] bg-white/95 p-10 shadow-2xl ring-1 ring-white/40">
-            <img src={LOGO} alt="Logo CUY" className="h-64 w-64 object-contain" />
-          </div>
+          <img src={LOGO} alt="Logo CUY" className="h-72 w-72 object-contain drop-shadow-2xl" />
           <div className="mt-10 text-[11px] uppercase tracking-[0.35em] opacity-80">
             République du Cameroun
           </div>
@@ -67,10 +65,8 @@ function LoginPage() {
             <div className="font-bold">{BRAND.short}</div>
           </div>
 
-          <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary mb-5">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-            Espace administrateur
-          </div>
+
+
 
           <h1 className="text-4xl font-bold tracking-tight">Bienvenue à nouveau</h1>
           <p className="text-muted-foreground mt-2">
