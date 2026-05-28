@@ -65,10 +65,8 @@ function LoginPage() {
             <div className="font-bold">{BRAND.short}</div>
           </div>
 
-          <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary mb-5">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-            Espace administrateur
-          </div>
+
+
 
           <h1 className="text-4xl font-bold tracking-tight">Bienvenue à nouveau</h1>
           <p className="text-muted-foreground mt-2">
